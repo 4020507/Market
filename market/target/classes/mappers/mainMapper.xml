@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.market.mappers.mainMapper">
+	
+	<!-- to select category -->
+	<select id="category" resultType="com.market.vo.CategoryVO">
+		select
+			category_name, category_code
+		from products_category
+	    	order by category_code
+	</select>
+	
+	<!-- to register a new product -->
+	<select id="write">
+		INSERT INTO products		(seller, pssword, category_code, product_price, intro, state, image, thumbnail) 
+		VALUES (#{seller}, #{pssword}, #{category_code}, #{product_price}, #{intro}, #{state}, #{image}, #{thumbnail})
+	</select>
+	
+	<!-- to see all products -->
+	<select id="view" resultType="com.market.vo.ProductsVO">
+		SELECT product_num, state, regDate
+			FROM products
+			ORDER BY
+			(
+			case state
+			when '0' then 1
+			when '1' then 1
+			ELSE
+			2 end
+			), regDate desc
+	</select>
+	
+	<!-- make pages -->
+	<select id ="paging" resultType="com.market.vo.ProductsVO">
+	<![CDATA[
+		SELECT p.product_num, p.seller, p.pssword, p.category_code, p.product_price, p.thumbnail, p.intro, p.regDate, p.state, p.hit, row_num
+		FROM (SELECT product_num, seller, pssword, category_code, product_price, thumbnail, intro, regDate, state, hit,
+					row_number() over
+					(
+					ORDER BY
+					(
+					case state
+					when '0' then 1
+					when '1' then 1
+					ELSE
+					2 end
+					), regDate desc
+					) AS row_num
+					FROM products
+					) AS p
+		WHERE row_num BETWEEN #{start} and #{end}
+		]]>
+	</select>
+	
+	<!-- make pages for each category -->
+	<select id ="ToyPaging" resultType="com.market.vo.ProductsVO">
+	<![CDATA[
+		SELECT p.product_num, p.seller, p.pssword, p.category_code, p.product_price, p.thumbnail, p.intro, p.regDate, p.state, p.hit, row_num
+		FROM (SELECT product_num, seller, pssword, category_code, product_price, thumbnail, intro, regDate, state, hit,
+					row_number() over(
+					ORDER BY
+					(
+					case state
+					when '0' then 1
+					when '1' then 1
+					ELSE
+					2 end
+					), regDate desc
+					
+					) AS row_num
+					FROM products WHERE category_code = 100
+					) AS p
+		WHERE row_num BETWEEN #{start} and #{end}
+		]]>
+	</select>
+	
+	<select id ="ClothPaging" resultType="com.market.vo.ProductsVO">
+	<![CDATA[
+		SELECT p.product_num, p.seller, p.pssword, p.category_code, p.product_price, p.thumbnail, p.intro, p.regDate, p.state, p.hit, row_num
+		FROM (SELECT product_num, seller, pssword, category_code, product_price, thumbnail, intro, regDate, state, hit,
+					row_number() over(
+					ORDER BY
+					(
+					case state
+					when '0' then 1
+					when '1' then 1
+					ELSE
+					2 end
+					), regDate desc
+					) AS row_num
+					FROM products WHERE category_code = 200
+					) AS p
+		WHERE row_num BETWEEN #{start} and #{end}
+		]]>
+	</select>
+	
+	<select id ="FruitPaging" resultType="com.market.vo.ProductsVO">
+	<![CDATA[
+		SELECT p.product_num, p.seller, p.pssword, p.category_code, p.product_price, p.thumbnail, p.intro, p.regDate, p.state, p.hit, row_num
+		FROM (SELECT product_num, seller, pssword, category_code, product_price, thumbnail, intro, regDate, state, hit,
+					row_number() over(
+					ORDER BY
+					(
+					case state
+					when '0' then 1
+					when '1' then 1
+					ELSE
+					2 end
+					), regDate desc
+					) AS row_num
+					FROM products WHERE category_code = 300
+					) AS p
+		WHERE row_num BETWEEN #{start} and #{end}
+		]]>
+	</select>
+	
+	<select id ="ElectronicPaging" resultType="com.market.vo.ProductsVO">
+	<![CDATA[
+		SELECT p.product_num, p.seller, p.pssword, p.category_code, p.product_price, p.thumbnail, p.intro, p.regDate, p.state, p.hit, row_num
+		FROM (SELECT product_num, seller, pssword, category_code, product_price, thumbnail, intro, regDate, state, hit,
+					row_number() over(
+					ORDER BY
+					(
+					case state
+					when '0' then 1
+					when '1' then 1
+					ELSE
+					2 end
+					), regDate desc
+			
+					) AS row_num
+					FROM products WHERE category_code = 400
+					) AS p
+		WHERE row_num BETWEEN #{start} and #{end}
+		]]>
+	</select>
+	
+	<select id ="ShoePaging" resultType="com.market.vo.ProductsVO">
+	<![CDATA[
+		SELECT p.product_num, p.seller, p.pssword, p.category_code, p.product_price, p.thumbnail, p.intro, p.regDate, p.state, p.hit, row_num
+		FROM (SELECT product_num, seller, pssword, category_code, product_price, thumbnail, intro, regDate, state, hit,
+					row_number() over(
+					ORDER BY
+					(
+					case state
+					when '0' then 1
+					when '1' then 1
+					ELSE
+					2 end
+					), regDate desc
+					) AS row_num
+					FROM products WHERE category_code = 500
+					) AS p
+		WHERE row_num BETWEEN #{start} and #{end}
+		]]>
+	</select>
+	
+	<!-- count the number of products for each cateogry -->
+	<select id ="listCount" resultType="int">
+		SELECT COUNT(product_num)
+		FROM products
+	</select>
+	
+	<select id ="ToyCount" resultType="int">
+		SELECT COUNT(product_num)
+		FROM products
+		where category_code = 100
+	</select>
+	
+	<select id ="ClothCount" resultType="int">
+		SELECT COUNT(product_num)
+		FROM products
+		where category_code = 200
+	</select>
+	
+	<select id ="FruitCount" resultType="int">
+		SELECT COUNT(product_num)
+		FROM products
+		where category_code = 300
+	</select>
+	
+	<select id ="ElectronicCount" resultType="int">
+		SELECT COUNT(product_num)
+		FROM products
+		where category_code = 400
+	</select>
+	
+	<select id ="ShoeCount" resultType="int">
+		SELECT COUNT(product_num)
+		FROM products
+		where category_code = 500
+	</select>
+	
+	<select id ="ReplyCount" resultType="int">
+		SELECT COUNT(product_num)
+		FROM reply
+		where product_num = #{product_num}
+	</select>
+	
+	<!-- see a product detail -->
+	<select id="detail" resultType="com.market.vo.ProductsVO">
+		SELECT product_num, seller, category_code, product_price, intro, regDate, state, image, pssword, image, thumbnail, hit 
+		FROM products where product_num = #{product_num}
+	</select>
+	
+	<!-- to modify a product -->
+	<select id="modify">
+		UPDATE products SET 
+		seller = #{seller},
+		category_code = #{category_code},
+		product_price = #{product_price},
+		intro = #{intro},
+		state = #{state},
+		image = #{image},
+		pssword = #{pssword},
+		image = #{image},
+		thumbnail = #{thumbnail},
+		regDate = current_timestamp()
+		WHERE product_num = #{product_num}
+	</select>
+	
+	<!-- to delete a product -->
+	<delete id="delete">
+	<![CDATA[
+		DELETE FROM products
+		WHERE product_num = #{product_num}
+	]]>
+	</delete>
+	
+	<!-- to insert a reply -->
+	<select id="reply">
+		INSERT INTO reply
+		(userName, userPssword, userOpinion, product_num) 
+		VALUES (#{userName}, #{userPssword}, #{userOpinion}, #{product_num})
+	</select>
+	
+	<!-- to see replies -->
+	<select id="replyList" resultType="com.market.vo.ReplyVO">
+		SELECT userName, userOpinion, product_num, userPssword, regDate, reply_num
+		FROM reply ORDER BY regDate
+	</select>
+	
+	<!-- to modify reply -->
+	<select id="replyModify">
+		update reply set
+		userOpinion = #{userOpinion}
+		where reply_num = #{reply_num}
+		
+	</select>
+	
+	<!-- to delete a reply -->
+	<delete id="replyDelete">
+	<![CDATA[
+		DELETE FROM reply
+		WHERE reply_num = #{reply_num}
+	]]>
+	</delete>
+	
+	<!-- to increase a hit -->
+	<select id="hit">
+		update products set
+		hit = hit+1
+		where product_num = #{product_num}
+		
+	</select>
+	
+</mapper>
